@@ -35,18 +35,19 @@ public class Main {
         Git git = new Git(repository);
         LogCommand log = git.log();
         Iterable<RevCommit> commits = log.call();
-        String previousCommitId = "";
+        String nextCommitId = "";
         for (RevCommit commit : commits) {
-            if (!previousCommitId.isEmpty()) {
-                runDiffCommand(repoPath, previousCommitId, commit.getId().name());
+            if (!nextCommitId.isEmpty()) {
+                runDiffCommand(repoPath, commit.getId().name(), nextCommitId);
             }
 
-            previousCommitId = commit.getId().name();
+            nextCommitId = commit.getId().name();
         }
     }
 
     private static void runDiffCommand(String repoPath, String previousCommitId, String currentCommitId) throws IOException {
         String gitCommand = "git diff --word-diff " + previousCommitId + " " + currentCommitId;
+        System.out.println("GIT_COMMAND:" + gitCommand);
         // Create a ProcessBuilder
         ProcessBuilder processBuilder = new ProcessBuilder(gitCommand.split(" "));
         processBuilder.redirectErrorStream(true);
