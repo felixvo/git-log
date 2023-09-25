@@ -35,26 +35,24 @@ public class Main {
         Git git = new Git(repository);
         LogCommand log = git.log();
         Iterable<RevCommit> commits = log.call();
-        ObjectReader reader = repository.newObjectReader();
-        DiffCommand diffCmd = git.diff();
         String previousCommitId = "";
         for (RevCommit commit : commits) {
             if (!previousCommitId.isEmpty()) {
-                runDiffCommand(previousCommitId, commit.getId().toString());
+                runDiffCommand(repoPath, previousCommitId, commit.getId().name());
             }
 
-            previousCommitId = commit.getId().toString();
+            previousCommitId = commit.getId().name();
         }
     }
 
-    private static void runDiffCommand(String previousCommitId, String currentCommitId) throws IOException {
+    private static void runDiffCommand(String repoPath, String previousCommitId, String currentCommitId) throws IOException {
         String gitCommand = "git diff --word-diff " + previousCommitId + " " + currentCommitId;
         // Create a ProcessBuilder
         ProcessBuilder processBuilder = new ProcessBuilder(gitCommand.split(" "));
         processBuilder.redirectErrorStream(true);
 
         // Set the working directory to the Git repository directory
-        processBuilder.directory(new File("/Users/fox/Desktop/test-git/"));
+        processBuilder.directory(new File(repoPath));
 
         // Start the process
         Process process = processBuilder.start();
