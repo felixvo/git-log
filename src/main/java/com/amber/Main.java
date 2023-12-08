@@ -29,7 +29,7 @@ public class Main {
         System.out.println("Please input the repo path:");
         String repoPath = scanner.nextLine();
         Repository repository = new RepositoryBuilder()
-                .setGitDir(new File(repoPath))
+                .setGitDir(new File(repoPath + "/.git"))
                 .build();
 
         Git git = new Git(repository);
@@ -48,6 +48,7 @@ public class Main {
     private static void runDiffCommand(String repoPath, String previousCommitId, String currentCommitId) throws IOException {
         String gitCommand = "git diff --word-diff " + previousCommitId + " " + currentCommitId;
         System.out.println("GIT_COMMAND:" + gitCommand);
+        System.out.println("changes in commit: " + currentCommitId);
         // Create a ProcessBuilder
         ProcessBuilder processBuilder = new ProcessBuilder(gitCommand.split(" "));
         processBuilder.redirectErrorStream(true);
